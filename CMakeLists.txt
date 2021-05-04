@@ -28,8 +28,7 @@ endif()
 find_path(CIMG_H_DIR NAMES CImg.h PATHS "${CMAKE_CURRENT_SOURCE_DIR}/third-party/CImg")
 include_directories(${CIMG_H_DIR})
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/pHash.h.cmake ${CMAKE_SOURCE_DIR}/src/pHash.h)
-
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/pHash.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/src/pHash.h)
 
 if(NOT WIN32)
        set(MMAN_FILE "")
