@@ -305,11 +305,15 @@ int ph_dct_imagehash(const char *file, ulong64 &hash) {
         return -1;
     }
     CImg<uint8_t> src;
+#ifndef HAVE_C_BINDINGS
     try {
         src.load(file);
     } catch (CImgIOException &ex) {
         return -1;
     }
+#else
+    src.load(file);
+#endif
     CImg<float> meanfilter(7, 7, 1, 1, 1);
     CImg<float> img;
     if (src.spectrum() == 3) {

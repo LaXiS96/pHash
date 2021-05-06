@@ -33,7 +33,9 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef __MINGW32__
 #include <sys/mman.h>
+#endif
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>

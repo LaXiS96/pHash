@@ -6,9 +6,11 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
+// TODO documentation, watch out for mallocs
 
-int ph_dct_imagehash(const char* file, uint64_t* hash);
-uint8_t* ph_mh_imagehash(const char* filename, int* N, float alpha, float lvl);
+bool ph_c_dct_imagehash(const char* file, uint64_t* hash);
+bool ph_c_mh_imagehash(const char* file, float alpha, float lvl, uint8_t** hash);
 
 #ifdef __cplusplus
 }

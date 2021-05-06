@@ -14,6 +14,7 @@ OPTION(WITH_AUDIO_HASH "Audio hash support"                             OFF)
 OPTION(WITH_VIDEO_HASH "Video hash support"                             OFF)
 OPTION(PHASH_BINDINGS  "Compile foreign programming languages bindings" OFF)
 OPTION(PHASH_EXAMPLES  "Compile examples"                               OFF)
+option(PHASH_C_BINDINGS "Include C bindings" OFF)
 
 set(HAVE_IMAGE_HASH 1)
 
@@ -26,13 +27,12 @@ if(WITH_VIDEO_HASH)
 endif()
 
 find_path(CIMG_H_DIR NAMES CImg.h PATHS "${CMAKE_CURRENT_SOURCE_DIR}/third-party/CImg")
-include_directories(${CIMG_H_DIR})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/pHash.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/src/pHash.h)
 
-if(NOT WIN32)
-       set(MMAN_FILE "")
-       set(DIRENT_FILE "")
+if(NOT WIN32 OR MINGW)
+    set(MMAN_FILE "")
+    set(DIRENT_FILE "")
     EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE BUILD_SYSTEM)
     EXEC_PROGRAM(uname ARGS -s OUTPUT_VARIABLE CMAKE_SYSTEM_NAME)
 else()
@@ -91,7 +91,18 @@ if(PHASH_STATIC)
 endif()
 
 set_property(TARGET pHash PROPERTY VERSION "${pHash_VERSION_MAJOR}.${pHash_VERSION_MINOR}.${pHash_VERSION_PATCH}")
+target_include_directories(
+    pHash
+    PUBLIC "src"
+    PUBLIC ${CIMG_H_DIR}
+)
 target_link_libraries(pHash ${LIBS_DEPS})
+
+if(PHASH_C_BINDINGS)
+    target_compile_definitions(pHash PRIVATE HAVE_C_BINDINGS)
+    target_sources(pHash PRIVATE "bindings/c/pHash_c.cpp")
+    target_include_directories(pHash PUBLIC "bindings/c")
+endif()
 
 install(TARGETS pHash DESTINATION lib)
 install(FILES src/pHash.h DESTINATION include)
